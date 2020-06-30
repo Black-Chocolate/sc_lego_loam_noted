@@ -30,6 +30,10 @@ cmake ..
 sudo make install
 ```
 
-下面是闭环失败的一些场景
+oxford闭环失败
 
 ![image-20200630231954989](README/image-20200630231954989.png)
+
+kitti的部分位置闭环检测失败
+
+![image-20200630234538316](README/image-20200630234538316.png)
