@@ -52,7 +52,7 @@ namespace lego_loam{
         ros::Publisher pubLaserAfterMappedPath;
         nav_msgs::Path laserAfterMappedPath;
         // std::vector<geometry_msgs::PoseStamped> laserAfterMappedPath;
-
+        std::string odom_trajectory_path;
     };
 
 

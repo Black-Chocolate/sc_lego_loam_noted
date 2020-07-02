@@ -1,7 +1,8 @@
 # topic
-# pointCloudTopic: "/os1_points"
-pointCloudTopic: "/velodyne_points"
-imuTopic: "/kitti/oxts/imu"
+#pointCloudTopic: "/os1_points"
+pointCloudTopic: "/fused/velodyne_points"
+#pointCloudTopic: "/kitti/velo/pointcloud"
+imuTopic: "/kitti/oxts/imu1111"   # 这里不要用imu
 #"/fused/velodyne_points"
 #"/kitti_scan"
 #"/os1_points"
@@ -10,21 +11,37 @@ imuTopic: "/kitti/oxts/imu"
 # vlp为true
 useCloudRing: false
 
+# tf init param
+x: 0.0
+y: 0.0
+z: 0.0
+roll: 0.0
+pitch: 0.0
+yaw: 0.0
+
 # VLP-16
-N_SCAN: 16
+#N_SCAN: 16
+#Horizon_SCAN: 1800
+#ang_res_x: 0.2
+#ang_res_y: 2.0
+#ang_bottom: 15.0 + 0.1
+#groundScanInd: 7
+
+# VLP-32
+N_SCAN: 32
 Horizon_SCAN: 1800
 ang_res_x: 0.2
-ang_res_y: 2.0
-ang_bottom: 15.0 + 0.1
-groundScanInd: 7
+ang_res_y: 1.333
+ang_bottom: 30.67
+groundScanInd: 20
 
 # VLP-128
-# N_SCAN: 128
-# Horizon_SCAN: 1800
-# ang_res_x: 0.2
-# ang_res_y: 0.3
-# ang_bottom: 25.0
-# groundScanInd: 10
+#N_SCAN: 128
+#Horizon_SCAN: 1800
+#ang_res_x: 0.2
+#ang_res_y: 0.3
+#ang_bottom: 25.0
+#groundScanInd: 10
 
 # ouster
 #N_SCAN: 64

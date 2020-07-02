@@ -19,12 +19,17 @@ find_package(catkin REQUIRED COMPONENTS
         geometry_msgs
         nav_msgs
         cloud_msgs
+
+#        roslib
         )
 
 # find_package (Eigen3 REQUIRED NO_MODULE)
 find_package(GTSAM REQUIRED QUIET)
 find_package(PCL REQUIRED QUIET)
 find_package(OpenCV REQUIRED QUIET)
+
+include(cmake/YAML.cmake)
+
 
 catkin_package(
         INCLUDE_DIRS include
@@ -46,6 +51,7 @@ link_directories(
         ${PCL_LIBRARY_DIRS}
         ${GTSAM_LIBRARY_DIRS}
 )
+link_libraries(yaml-cpp)
 
 add_executable(imageProjection src/image_projection.cpp)
 add_dependencies(imageProjection ${catkin_EXPORTED_TARGETS} cloud_msgs_gencpp)

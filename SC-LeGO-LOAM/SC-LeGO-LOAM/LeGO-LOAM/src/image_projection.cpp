@@ -8,7 +8,7 @@ namespace lego_loam {
         InitParams();
         // subscriber
         subLaserCloud = nh.subscribe<sensor_msgs::PointCloud2>(pointCloudTopic.c_str(), 1,
-                                                               &ImageProjection::cloudHandler,this);
+                                                               &ImageProjection::cloudHandler, this);
         // publisher
         pubFullCloud = nh.advertise<sensor_msgs::PointCloud2>("/full_cloud_projected", 1);
         pubFullInfoCloud = nh.advertise<sensor_msgs::PointCloud2>("/full_cloud_info", 1);
@@ -30,19 +30,22 @@ namespace lego_loam {
 
     void ImageProjection::InitParams() {
         std::cout << "***************** ImageProjection *************************" << std::endl;
-        nh.param("N_SCAN", N_SCAN, 16);
-        nh.param("Horizon_SCAN", Horizon_SCAN, 1800);
-        nh.param("ang_res_x", ang_res_x, 0.2);
-        nh.param("ang_res_y", ang_res_y, 2.0);
-        nh.param("ang_bottom", ang_bottom, 15.0 + 0.1);
-        nh.param("groundScanInd", groundScanInd, 7);
 
-        nh.param<std::string>("pointCloudTopic", pointCloudTopic, "/velodyne_points");
-        nh.param<std::string>("imuTopic", imuTopic, "/imu/data");
-        nh.param<bool>("useCloudRing", useCloudRing, false);
-
-        segmentAlphaX = ang_res_x / 180.0 * M_PI;
-        segmentAlphaY = ang_res_y / 180.0 * M_PI;
+//        N_SCAN = config_node["N_SCAN"].as<int>();
+//        Horizon_SCAN = config_node["Horizon_SCAN"].as<int>();
+//
+//        ang_res_x = config_node["ang_res_x"].as<double>();
+//        ang_res_y = config_node["ang_res_y"].as<double>();
+//        ang_bottom = config_node["ang_bottom"].as<double>();
+//        groundScanInd = config_node["groundScanInd"].as<int>();
+//
+//        pointCloudTopic = config_node["pointCloudTopic"].as<std::string>();
+//        imuTopic = config_node["imuTopic"].as<std::string>();
+//        useCloudRing = config_node["useCloudRing"].as<bool>();
+//
+//
+//        segmentAlphaX = ang_res_x / 180.0 * M_PI;
+//        segmentAlphaY = ang_res_y / 180.0 * M_PI;
 
         std::cout << "pointCloudTopic : " << pointCloudTopic << std::endl;
         std::cout << "imuTopic : " << imuTopic << std::endl;

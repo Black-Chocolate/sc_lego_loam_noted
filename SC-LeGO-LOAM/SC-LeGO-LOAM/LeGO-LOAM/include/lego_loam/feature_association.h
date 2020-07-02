@@ -233,11 +233,11 @@ namespace lego_loam{
 
         int frameCount;
 
-        // params
-        std::string imuTopic;
-
-        int N_SCAN;
-        int Horizon_SCAN;
+//        // params
+//        std::string imuTopic;
+//
+//        int N_SCAN;
+//        int Horizon_SCAN;
     };
 }
 

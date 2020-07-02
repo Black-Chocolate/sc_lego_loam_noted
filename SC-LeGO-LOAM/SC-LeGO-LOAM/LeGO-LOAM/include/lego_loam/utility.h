@@ -1,6 +1,10 @@
 #ifndef _UTILITY_LIDAR_ODOMETRY_H_
 #define _UTILITY_LIDAR_ODOMETRY_H_
 
+// 工具
+#include <yaml-cpp/yaml.h>
+#include <ros/package.h>
+
 // ros
 #include <ros/ros.h>
 #include <sensor_msgs/Imu.h>
@@ -53,9 +57,29 @@ using namespace std;
 
 typedef pcl::PointXYZI PointType;
 
+//  get params
+extern const std::string package_path = ros::package::getPath("lego_loam");
+extern const std::string config_file_path = package_path + "/params/lego.yaml";
+
+YAML::Node config_node = YAML::LoadFile(config_file_path);
+extern const int N_SCAN = config_node["N_SCAN"].as<int>();
+extern const int Horizon_SCAN = config_node["Horizon_SCAN"].as<int>();
+
+extern const double ang_res_x = config_node["ang_res_x"].as<double>();
+extern const double ang_res_y = config_node["ang_res_y"].as<double>();
+extern const double ang_bottom = config_node["ang_bottom"].as<double>();
+extern const int groundScanInd = config_node["groundScanInd"].as<int>();
+
+extern const std::string pointCloudTopic = config_node["pointCloudTopic"].as<std::string>();
+extern const std::string imuTopic = config_node["imuTopic"].as<std::string>();
+extern const bool useCloudRing = config_node["useCloudRing"].as<bool>();
+
+//  odom轨迹
+// extern const std::string odom_trajectory_path = package_path + "/map/stamped_legoloam_map_estimate.txt";
+//extern const std::string pcd_file_path = package_path + "/map/";
+
 // disabled, it would be better to save the pcd in $(find lego_loam)/map folder
 // extern const string fileDirectory = "/tmp/";
-
 
 
 /*
@@ -133,8 +157,8 @@ extern const float sensorMountAngle = 0.0;
 extern const float segmentTheta = 60.0 / 180.0 * M_PI; // decrese this value may improve accuracy
 extern const int segmentValidPointNum = 5;
 extern const int segmentValidLineNum = 3;
-// extern const float segmentAlphaX = ang_res_x / 180.0 * M_PI;
-// extern const float segmentAlphaY = ang_res_y / 180.0 * M_PI;
+extern const float segmentAlphaX = ang_res_x / 180.0 * M_PI;
+extern const float segmentAlphaY = ang_res_y / 180.0 * M_PI;
 
 
 extern const int edgeFeatureNum = 2;
@@ -152,10 +176,9 @@ extern const int surroundingKeyframeSearchNum = 50; // submap size (when loop cl
 // history key frames (history submap for loop closure)
 extern const float historyKeyframeSearchRadius = 20.0; // NOT used in Scan Context-based loop detector / default 7.0; key frame that is within n meters from current pose will be considerd for loop closure
 extern const int historyKeyframeSearchNum = 25; // 2n+1 number of history key frames will be fused into a submap for loop closure
-extern const float historyKeyframeFitnessScore = 1.5; // default 0.3; the smaller the better alignment
+extern const float historyKeyframeFitnessScore = 1.6; // default 0.3; the smaller the better alignment
 
 extern const float globalMapVisualizationSearchRadius = 1500.0; // key frames with in n meters will be visualized
-
 
 struct smoothness_t {
     float value;

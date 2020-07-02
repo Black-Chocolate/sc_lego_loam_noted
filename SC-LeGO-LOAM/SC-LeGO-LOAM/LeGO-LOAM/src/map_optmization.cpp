@@ -59,28 +59,26 @@ namespace lego_loam {
         aftMappedTrans.frame_id_ = "/camera_init";
         aftMappedTrans.child_frame_id_ = "/aft_mapped";
 
-        nh.param<std::string>("file_dir", pcd_file_path, "/tmp/");
+        //  nh.param<std::string>("file_dir", pcd_file_path, "/tmp/");
 
-        nh.param<float>("x", init_tf_x, 0.0);
-        nh.param<float>("y", init_tf_y, 0.0);
-        nh.param<float>("z", init_tf_z, 0.0);
-        nh.param<float>("roll", init_tf_roll, 0.0);
-        nh.param<float>("pitch", init_tf_pitch, 0.0);
-        nh.param<float>("yaw", init_tf_yaw, 0.0);
+        pcd_file_path = package_path + "/map/";
+
+        init_tf_x = config_node["x"].as<float>();
+        init_tf_y = config_node["y"].as<float>();
+        init_tf_z = config_node["z"].as<float>();
+        init_tf_roll = config_node["roll"].as<float>();
+        init_tf_pitch = config_node["pitch"].as<float>();
+        init_tf_yaw = config_node["yaw"].as<float>();
 
         allocateMemory();
     }
 
     void mapOptimization::InitParams() {
         std::cout << "***************** mapOptimization *************************" << std::endl;
-
-        nh.param<std::string>("pointCloudTopic", pointCloudTopic, "/velodyne_points");
-        nh.param<std::string>("imuTopic", imuTopic, "/imu/data");
-
-
         std::cout << "pointCloudTopic : " << pointCloudTopic << std::endl;
         std::cout << "imuTopic : " << imuTopic << std::endl;
-
+        std::cout << "pcd_file_path : " << pcd_file_path << std::endl;
+        std::cout << "imuTopic : " << imuTopic << std::endl;
         std::cout << "******************** mapOptimization **********************" << std::endl;
     }
 
@@ -612,27 +610,28 @@ namespace lego_loam {
 
         pcl::io::savePCDFileASCII(pcd_file_path + "finalCloud.pcd", *transformed_pc_ptr);
 
-        // pcl::PointCloud<PointType>::Ptr cornerMapCloud(new pcl::PointCloud<PointType>());
-        // pcl::PointCloud<PointType>::Ptr cornerMapCloudDS(new pcl::PointCloud<PointType>());
-        // pcl::PointCloud<PointType>::Ptr surfaceMapCloud(new pcl::PointCloud<PointType>());
-        // pcl::PointCloud<PointType>::Ptr surfaceMapCloudDS(new pcl::PointCloud<PointType>());
+        // 后面的各种特征点地图可以注释掉
+        pcl::PointCloud<PointType>::Ptr cornerMapCloud(new pcl::PointCloud<PointType>());
+        pcl::PointCloud<PointType>::Ptr cornerMapCloudDS(new pcl::PointCloud<PointType>());
+        pcl::PointCloud<PointType>::Ptr surfaceMapCloud(new pcl::PointCloud<PointType>());
+        pcl::PointCloud<PointType>::Ptr surfaceMapCloudDS(new pcl::PointCloud<PointType>());
 
-        // for(int i = 0; i < cornerCloudKeyFrames.size(); i++) {
-        //     *cornerMapCloud  += *transformPointCloud(cornerCloudKeyFrames[i],   &cloudKeyPoses6D->points[i]);
-        //     *surfaceMapCloud += *transformPointCloud(surfCloudKeyFrames[i],     &cloudKeyPoses6D->points[i]);
-        //     *surfaceMapCloud += *transformPointCloud(outlierCloudKeyFrames[i],  &cloudKeyPoses6D->points[i]);
-        // }
+        for (int i = 0; i < cornerCloudKeyFrames.size(); i++) {
+            *cornerMapCloud += *transformPointCloud(cornerCloudKeyFrames[i], &cloudKeyPoses6D->points[i]);
+            *surfaceMapCloud += *transformPointCloud(surfCloudKeyFrames[i], &cloudKeyPoses6D->points[i]);
+            *surfaceMapCloud += *transformPointCloud(outlierCloudKeyFrames[i], &cloudKeyPoses6D->points[i]);
+        }
 
-        // downSizeFilterCorner.setInputCloud(cornerMapCloud);
-        // downSizeFilterCorner.filter(*cornerMapCloudDS);
-        // downSizeFilterSurf.setInputCloud(surfaceMapCloud);
-        // downSizeFilterSurf.filter(*surfaceMapCloudDS);
+        downSizeFilterCorner.setInputCloud(cornerMapCloud);
+        downSizeFilterCorner.filter(*cornerMapCloudDS);
+        downSizeFilterSurf.setInputCloud(surfaceMapCloud);
+        downSizeFilterSurf.filter(*surfaceMapCloudDS);
 
-        // pcl::transformPointCloud(*globalMapKeyFramesDS, *transformed_pc_ptr, map_to_init_trans_matrix);
+        pcl::transformPointCloud(*globalMapKeyFramesDS, *transformed_pc_ptr, map_to_init_trans_matrix);
 
-        // pcl::io::savePCDFileASCII(pcd_file_path+"cornerMap.pcd", *cornerMapCloudDS);
-        // pcl::io::savePCDFileASCII(pcd_file_path+"surfaceMap.pcd", *surfaceMapCloudDS);
-        // pcl::io::savePCDFileASCII(pcd_file_path+"trajectory.pcd", *cloudKeyPoses3D);
+        pcl::io::savePCDFileASCII(pcd_file_path + "cornerMap.pcd", *cornerMapCloudDS);
+        pcl::io::savePCDFileASCII(pcd_file_path + "surfaceMap.pcd", *surfaceMapCloudDS);
+        pcl::io::savePCDFileASCII(pcd_file_path + "trajectory.pcd", *cloudKeyPoses3D);
 
     }
 
@@ -800,6 +799,8 @@ namespace lego_loam {
         // std::lock_guard<std::mutex> lock(mtx);
         latestFrameIDLoopCloure = cloudKeyPoses3D->points.size() - 1;
         SCclosestHistoryFrameID = -1; // init with -1
+
+        //  这里检测回环
         auto detectResult = scManager.detectLoopClosureID(); // first: nn index, second: yaw diff
         SCclosestHistoryFrameID = detectResult.first;
         yawDiffRad = detectResult.second; // not use for v1 (because pcl icp withi initial somthing wrong...)
@@ -1461,6 +1462,7 @@ namespace lego_loam {
 
     void mapOptimization::saveKeyFramesAndFactor() {
 
+        //  此函数保存关键帧和factor
         currentRobotPosPoint.x = transformAftMapped[3];
         currentRobotPosPoint.y = transformAftMapped[4];
         currentRobotPosPoint.z = transformAftMapped[5];
@@ -1523,6 +1525,7 @@ namespace lego_loam {
         isamCurrentEstimate = isam->calculateEstimate();
         latestEstimate = isamCurrentEstimate.at<Pose3>(isamCurrentEstimate.size() - 1);
 
+        //  cloudKeyPoses3D指当前的点云，cloudKeyPoses6D指带pose的
         thisPose3D.x = latestEstimate.translation().y();
         thisPose3D.y = latestEstimate.translation().z();
         thisPose3D.z = latestEstimate.translation().x();
@@ -1571,6 +1574,7 @@ namespace lego_loam {
             */
         bool usingRawCloud = true;
         if (usingRawCloud) { // v2 uses downsampled raw point cloud, more fruitful height information than using feature points (v1)
+            //  这里对点云提取scan context特征
             pcl::PointCloud<PointType>::Ptr thisRawCloudKeyFrame(new pcl::PointCloud<PointType>());
             pcl::copyPointCloud(*laserCloudRawDS, *thisRawCloudKeyFrame);
             scManager.makeAndSaveScancontextAndKeys(*thisRawCloudKeyFrame);

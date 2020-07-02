@@ -30,11 +30,6 @@ namespace lego_loam{
 
     void FeatureAssociation::InitParams() {
         std::cout << "***************** FeatureAssociation *************************" << std::endl;
-        nh.param("N_SCAN", N_SCAN, 16);
-        nh.param("Horizon_SCAN", Horizon_SCAN, 1800);
-        nh.param<std::string>("imuTopic", imuTopic, "/imu/data");
-
-
         std::cout << "imuTopic : " << imuTopic << std::endl;
         std::cout << "N_SCAN : " << N_SCAN << std::endl;
         std::cout << "******************** FeatureAssociation **********************" << std::endl;

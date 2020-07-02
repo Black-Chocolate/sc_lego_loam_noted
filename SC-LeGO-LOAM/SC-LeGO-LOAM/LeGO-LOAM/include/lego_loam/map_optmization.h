@@ -21,7 +21,7 @@
 #include <gtsam/nonlinear/Values.h>
 #include <gtsam/nonlinear/ISAM2.h>
 
-namespace lego_loam{
+namespace lego_loam {
     using namespace gtsam;
 
     class mapOptimization {
@@ -62,7 +62,6 @@ namespace lego_loam{
 
         void imuHandler(const sensor_msgs::Imu::ConstPtr &imuIn);
 
-
         PointTypePose trans2PointTypePose(float transformIn[]);
 
         void publishKeyPosesAndFrames();
@@ -73,12 +72,9 @@ namespace lego_loam{
 
         void publishGlobalMap();
 
-
         void loopClosureThread();
 
-
         bool detectLoopClosure();
-
 
         void performLoopClosure(void);// performLoopClosure
 
@@ -100,9 +96,7 @@ namespace lego_loam{
 
         void scan2MapOptimization();
 
-
         void saveKeyFramesAndFactor(); // saveKeyFramesAndFactor
-
 
         void correctPoses();
 
@@ -292,13 +286,8 @@ namespace lego_loam{
 
         // // loop detector
         SC2::SCManager scManager;
-
-        // params
-        std::string pointCloudTopic;
-        std::string imuTopic;
     };
 }
-
 
 
 #endif //SRC_MAP_OPTMIZATION_H

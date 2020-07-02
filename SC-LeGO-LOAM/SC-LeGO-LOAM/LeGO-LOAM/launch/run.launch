@@ -29,24 +29,9 @@
     <!--          args="0 0 0 -1.570795 -1.570795 0   /base_link /imu   10"/>-->
 
     <!--- LeGO-LOAM -->
-    <node pkg="lego_loam" type="imageProjection" name="imageProjection" output="screen">
-        <rosparam file="$(find lego_loam)/params/lego.yaml" command="load"/>
-    </node>
-    <!--    <node pkg="lego_loam" type="lego_loam_node" name="lego_loam_node" output="screen"/>-->
-    <node pkg="lego_loam" type="featureAssociation" name="featureAssociation" output="screen">
-        <rosparam file="$(find lego_loam)/params/lego.yaml" command="load"/>
-    </node>
-    <node pkg="lego_loam" type="mapOptmization" name="mapOptmization" output="screen">
-        <rosparam file="$(find lego_loam)/params/lego.yaml" command="load"/>
-
-        <param name="file_dir" value="$(arg file_dir)"/>
-        <param name="x" value="$(arg x)"/>
-        <param name="y" value="$(arg y)"/>
-        <param name="z" value="$(arg z)"/>
-        <param name="roll" value="$(arg roll)"/>
-        <param name="pitch" value="$(arg pitch)"/>
-        <param name="yaw" value="$(arg yaw)"/>
-    </node>
+    <node pkg="lego_loam" type="imageProjection" name="imageProjection" output="screen"/>
+    <node pkg="lego_loam" type="featureAssociation" name="featureAssociation" output="screen"/>
+    <node pkg="lego_loam" type="mapOptmization" name="mapOptmization" output="screen"/>
     <node pkg="lego_loam" type="transformFusion" name="transformFusion" output="screen"/>
 
 </launch>

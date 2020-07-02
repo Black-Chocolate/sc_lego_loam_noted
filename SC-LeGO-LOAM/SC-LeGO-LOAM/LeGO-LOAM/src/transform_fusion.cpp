@@ -1,6 +1,6 @@
 #include "lego_loam/transform_fusion.h"
 
-namespace lego_loam{
+namespace lego_loam {
 
     TransformFusion::TransformFusion() {
 
@@ -31,6 +31,9 @@ namespace lego_loam{
             transformBefMapped[i] = 0;
             transformAftMapped[i] = 0;
         }
+
+         odom_trajectory_path = package_path + "/map/stamped_legoloam_map_estimate.txt";
+
         // 保存日志
         laserAfterMappedPath.poses.clear();
     }
@@ -175,7 +178,7 @@ namespace lego_loam{
         laserAfterMappedPath.poses.push_back(laserAfterMappedPose);
         // pubLaserAfterMappedPath.publish(laserAfterMappedPath);
 
-        std::ofstream fout("/home/xchu/data/data/loop_closure_test/stamped_legoloam_map_estimate.txt", std::ios::out);
+        std::ofstream fout(odom_trajectory_path, std::ios::out);
         for (size_t i = 0; i < laserAfterMappedPath.poses.size(); i++) {
             geometry_msgs::PoseStamped &laser_pose = laserAfterMappedPath.poses[i];
             fout.precision(15);

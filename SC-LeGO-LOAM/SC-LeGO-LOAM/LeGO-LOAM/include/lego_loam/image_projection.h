@@ -85,19 +85,19 @@ namespace lego_loam {
         uint16_t *queueIndY;
 
         // params
-        std::string pointCloudTopic;
-        std::string imuTopic;
-        bool useCloudRing = false;
-
-        int N_SCAN;
-        int Horizon_SCAN;
-        double ang_res_x;
-        double ang_res_y;
-        double ang_bottom;
-        int groundScanInd;
-
-        float segmentAlphaX;
-        float segmentAlphaY;
+//        std::string pointCloudTopic;
+//        std::string imuTopic;
+//        bool useCloudRing = false;
+//
+//        int N_SCAN;
+//        int Horizon_SCAN;
+//        double ang_res_x;
+//        double ang_res_y;
+//        double ang_bottom;
+//        int groundScanInd;
+//
+//        float segmentAlphaX;
+//        float segmentAlphaY;
     };
 }
 
